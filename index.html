@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Công Cụ So Sánh Phần Mềm Quản Lý Dự Án</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Warm Neutrals (Slate, Stone, Teal) -->
+    <!-- Application Structure Plan: Một trang tổng quan (dashboard) tương tác. Cấu trúc này ưu tiên khả năng so sánh nhanh và đi sâu vào chi tiết, khác với cấu trúc tuyến tính của báo cáo gốc. Người dùng có thể xem tổng quan qua biểu đồ radar, sau đó lọc và xem chi tiết trong bảng so sánh. Phần tóm tắt và khuyến nghị được đặt ở vị trí dễ thấy để hỗ trợ ra quyết định nhanh. Cấu trúc này được chọn vì nó biến một báo cáo tĩnh thành một công cụ ra quyết định động. -->
+    <!-- Visualization & Content Choices: Báo cáo so sánh -> Mục tiêu: So sánh & Thông tin -> Trình bày: Biểu đồ Radar (Chart.js) để trực quan hóa điểm mạnh/yếu tổng thể của từng phần mềm; Bảng HTML tương tác để so sánh chi tiết từng tính năng -> Tương tác: Nút bật/tắt để chọn phần mềm trên biểu đồ, bộ lọc theo danh mục tính năng cho bảng -> Lý do: Biểu đồ radar cung cấp "hình dạng" trực quan về năng lực của từng công cụ. Bảng có thể lọc giúp quản lý lượng thông tin lớn một cách hiệu quả. -> CONFIRMATION: NO SVG/Mermaid used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc; /* slate-50 */
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 700px;
+        height: 50vh;
+        max-height: 500px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .active-filter {
+        background-color: #0d9488 !important; /* teal-600 */
+        color: white !important;
+        border-color: #0d9488 !important;
+      }
+      .software-toggle[aria-checked="true"] {
+        opacity: 1;
+        border-width: 2px;
+      }
+      .software-toggle[aria-checked="false"] {
+        opacity: 0.5;
+        filter: grayscale(80%);
+      }
+    </style>
+  </head>
+  <body class="text-slate-800">
+    <header class="bg-white shadow-sm sticky top-0 z-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <h1
+          class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight"
+        >
+          Công Cụ So Sánh Phần Mềm Quản Lý Dự Án
+        </h1>
+        <p class="mt-1 text-slate-500">
+          Phân tích tương tác dựa trên tiêu chí của Phòng Tài chính
+        </p>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <!-- Section 1: Introduction and High-Level Summaries -->
+      <section id="tong-quan" class="mb-12">
+        <h2 class="text-2xl font-bold mb-1 text-slate-900">
+          Tóm Tắt & Đánh Giá Sơ Bộ
+        </h2>
+        <p class="text-slate-600 mb-6">
+          Dưới đây là nhận định chung về thế mạnh cốt lõi của từng nền tảng để
+          giúp bạn có cái nhìn tổng quan ban đầu.
+        </p>
+        <div
+          id="summary-cards"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
+          <!-- Summary cards will be injected here by JS -->
+        </div>
+      </section>
+
+      <!-- Section 2: Interactive Comparison Dashboard -->
+      <section id="so-sanh" class="bg-white p-4 sm:p-6 rounded-2xl shadow-lg">
+        <h2 class="text-2xl font-bold mb-1 text-slate-900">
+          Bảng Điều Khiển So Sánh Tương Tác
+        </h2>
+        <p class="text-slate-600 mb-6">
+          Sử dụng các tùy chọn bên dưới để so sánh hiệu suất và tính năng của
+          các phần mềm.
+        </p>
+
+        <!-- Chart Section -->
+        <div class="mb-10">
+          <h3 class="text-xl font-semibold mb-4 text-center text-slate-800">
+            Biểu Đồ Radar: So Sánh Tổng Thể
+          </h3>
+          <div
+            id="software-toggles"
+            class="flex flex-wrap justify-center gap-4 mb-6"
+          >
+            <!-- Toggles will be injected here by JS -->
+          </div>
+          <div class="chart-container">
+            <canvas id="radarChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Detailed Comparison Table Section -->
+        <div>
+          <div
+            class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3"
+          >
+            <h3 class="text-xl font-semibold text-slate-800 whitespace-nowrap">
+              Bảng So Sánh Chi Tiết
+            </h3>
+            <div
+              class="text-xs text-slate-600 bg-slate-100 px-3 py-1.5 rounded-lg w-full sm:w-auto"
+            >
+              <span class="font-bold">Chú giải:</span>
+              <span class="mx-1.5">✔✔ Hỗ trợ mạnh</span> |
+              <span class="mx-1.5">✔ Có hỗ trợ</span> |
+              <span class="mx-1.5">~ Cần add-on</span> |
+              <span class="mx-1.5">✖ Không hỗ trợ</span>
+            </div>
+          </div>
+
+          <div id="category-filters" class="flex flex-wrap gap-2 mb-4">
+            <!-- Filter buttons will be injected here by JS -->
+          </div>
+          <div class="overflow-x-auto rounded-lg border border-slate-200">
+            <table class="min-w-full bg-white">
+              <thead class="bg-slate-100">
+                <tr>
+                  <th
+                    class="py-3 px-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider w-2/5"
+                  >
+                    Tiêu chí đánh giá
+                  </th>
+                  <th
+                    class="py-3 px-4 text-center text-xs font-semibold text-slate-600 uppercase tracking-wider"
+                  >
+                    Bitrix24
+                  </th>
+                  <th
+                    class="py-3 px-4 text-center text-xs font-semibold text-slate-600 uppercase tracking-wider"
+                  >
+                    Nulab
+                  </th>
+                  <th
+                    class="py-3 px-4 text-center text-xs font-semibold text-slate-600 uppercase tracking-wider"
+                  >
+                    Jira
+                  </th>
+                  <th
+                    class="py-3 px-4 text-center text-xs font-semibold text-slate-600 uppercase tracking-wider"
+                  >
+                    Zoho
+                  </th>
+                </tr>
+              </thead>
+              <tbody
+                id="comparison-table-body"
+                class="divide-y divide-slate-200"
+              >
+                <!-- Table rows will be injected here by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Recommendations -->
+      <section id="khuyen-nghi" class="mt-12">
+        <h2 class="text-2xl font-bold mb-1 text-slate-900">
+          Kết Luận và Khuyến Nghị
+        </h2>
+        <p class="text-slate-600 mb-6">
+          Dựa trên phân tích, đây là các khuyến nghị cho từng trường hợp ưu tiên
+          cụ thể.
+        </p>
+        <div id="recommendation-cards" class="space-y-4">
+          <!-- Recommendation cards will be injected here by JS -->
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-white mt-12 border-t">
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-sm text-slate-500"
+      >
+        <p>&copy; 2024 Công cụ phân tích. Được tạo để hỗ trợ ra quyết định.</p>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const scoreMap = { "✔✔": 4, "✔": 3, "~": 2, "✖": 1 };
+        const iconMap = { "✔✔": "✔✔", "✔": "✔", "~": "~", "✖": "✖" };
+
+        const softwareData = {
+          bitrix24: {
+            name: "Bitrix24",
+            color: "#ef4444", // red-500
+            summary:
+              'Nền tảng "tất cả trong một" mạnh về CRM và tự động hóa quy trình, phù hợp cho công ty muốn một hệ thống hợp nhất từ A-Z.',
+          },
+          nulab: {
+            name: "Nulab (Backlog)",
+            color: "#3b82f6", // blue-500
+            summary:
+              "Thiết kế cho nhóm phát triển phần mềm với giao diện đơn giản, thân thiện. Mạnh về quản lý mã nguồn và theo dõi lỗi.",
+          },
+          jira: {
+            name: "Atlassian (Jira)",
+            color: "#eab308", // yellow-500
+            summary:
+              "Tiêu chuẩn vàng cho đội ngũ IT, cực kỳ mạnh mẽ, linh hoạt và tùy biến cao thông qua hệ sinh thái ứng dụng (Marketplace) khổng lồ.",
+          },
+          zoho: {
+            name: "Zoho Projects",
+            color: "#22c55e", // green-500
+            summary:
+              "Thế mạnh vượt trội là khả năng tích hợp liền mạch với các ứng dụng khác trong bộ Zoho, đặc biệt là Zoho Books (kế toán).",
+          },
+        };
+
+        const comparisonData = [
+          {
+            category: "Quản lý Tài chính",
+            feature: "Lập ngân sách chi tiết cho dự án/hạng mục",
+            bitrix24: "~",
+            nulab: "✖",
+            jira: "~",
+            zoho: "✔✔",
+          },
+          {
+            category: "Quản lý Tài chính",
+            feature: "Phân bổ ngân sách theo thời gian",
+            bitrix24: "~",
+            nulab: "✖",
+            jira: "~",
+            zoho: "✔",
+          },
+          {
+            category: "Quản lý Tài chính",
+            feature: "So sánh Ngân sách vs. Chi phí thực tế",
+            bitrix24: "✔",
+            nulab: "✖",
+            jira: "✔",
+            zoho: "✔✔",
+          },
+          {
+            category: "Quản lý Tài chính",
+            feature: "Ghi nhận và phân loại chi phí",
+            bitrix24: "✔",
+            nulab: "~",
+            jira: "✔",
+            zoho: "✔✔",
+          },
+          {
+            category: "Quản lý Tài chính",
+            feature: "Quản lý quy trình duyệt chi",
+            bitrix24: "✔",
+            nulab: "✖",
+            jira: "✔",
+            zoho: "✔",
+          },
+          {
+            category: "Quản lý Tài chính",
+            feature: "Theo dõi các mốc thanh toán (milestones)",
+            bitrix24: "✔",
+            nulab: "✔",
+            jira: "✔",
+            zoho: "✔✔",
+          },
+          {
+            category: "Quản lý Tài chính",
+            feature: "Ghi nhận doanh thu, dự báo dòng tiền",
+            bitrix24: "~",
+            nulab: "✖",
+            jira: "~",
+            zoho: "✔✔",
+          },
+          {
+            category: "Quản lý Tài chính",
+            feature: "Quản lý hợp đồng, hóa đơn, công nợ",
+            bitrix24: "✔",
+            nulab: "✖",
+            jira: "~",
+            zoho: "✔✔",
+          },
+          {
+            category: "Quản lý Tài chính",
+            feature: "Thiết lập đơn giá nhân sự ($/giờ)",
+            bitrix24: "✔",
+            nulab: "✔",
+            jira: "✔✔",
+            zoho: "✔✔",
+          },
+          {
+            category: "Quản lý Tài chính",
+            feature: "Tự động tính chi phí nhân sự từ timesheet",
+            bitrix24: "✔",
+            nulab: "✔",
+            jira: "✔✔",
+            zoho: "✔✔",
+          },
+          {
+            category: "Quản lý Tài chính",
+            feature: "Dự báo chi phí/doanh thu cuối dự án (EAC)",
+            bitrix24: "✖",
+            nulab: "✖",
+            jira: "~",
+            zoho: "✔",
+          },
+          {
+            category: "Quản lý Tài chính",
+            feature: "Phân tích lợi nhuận (profitability) dự án",
+            bitrix24: "~",
+            nulab: "✖",
+            jira: "✔",
+            zoho: "✔✔",
+          },
+          {
+            category: "Quản lý Dự án Cơ bản",
+            feature: "Kế hoạch dự án (Gantt Chart, Timeline)",
+            bitrix24: "✔✔",
+            nulab: "✔✔",
+            jira: "✔✔",
+            zoho: "✔✔",
+          },
+          {
+            category: "Quản lý Dự án Cơ bản",
+            feature: "Theo dõi tiến độ công việc (%)",
+            bitrix24: "✔✔",
+            nulab: "✔✔",
+            jira: "✔✔",
+            zoho: "✔✔",
+          },
+          {
+            category: "Quản lý Dự án Cơ bản",
+            feature: "Xem bảng chấm công (timesheet)",
+            bitrix24: "✔✔",
+            nulab: "✔",
+            jira: "✔✔",
+            zoho: "✔✔",
+          },
+          {
+            category: "Quản lý Dự án Cơ bản",
+            feature: "Lưu trữ tài liệu tập trung",
+            bitrix24: "✔✔",
+            nulab: "✔✔",
+            jira: "✔✔",
+            zoho: "✔✔",
+          },
+          {
+            category: "Báo cáo & Dashboard",
+            feature: "Báo cáo Ngân sách vs. Thực tế",
+            bitrix24: "~",
+            nulab: "✖",
+            jira: "✔",
+            zoho: "✔✔",
+          },
+          {
+            category: "Báo cáo & Dashboard",
+            feature: "Báo cáo Dòng tiền dự án",
+            bitrix24: "✖",
+            nulab: "✖",
+            jira: "~",
+            zoho: "✔",
+          },
+          {
+            category: "Báo cáo & Dashboard",
+            feature: "Báo cáo Chi phí nhân sự",
+            bitrix24: "✔",
+            nulab: "✔",
+            jira: "✔✔",
+            zoho: "✔✔",
+          },
+          {
+            category: "Báo cáo & Dashboard",
+            feature: "Báo cáo Lãi/Lỗ dự án",
+            bitrix24: "~",
+            nulab: "✖",
+            jira: "~",
+            zoho: "✔✔",
+          },
+          {
+            category: "Báo cáo & Dashboard",
+            feature: "Báo cáo tổng hợp đa dự án (Portfolio)",
+            bitrix24: "✔",
+            nulab: "✔",
+            jira: "✔✔",
+            zoho: "✔✔",
+          },
+          {
+            category: "Báo cáo & Dashboard",
+            feature: "Khả năng tùy chỉnh báo cáo",
+            bitrix24: "✔",
+            nulab: "~",
+            jira: "✔✔",
+            zoho: "✔",
+          },
+          {
+            category: "Báo cáo & Dashboard",
+            feature: "Dashboard trực quan, real-time",
+            bitrix24: "✔✔",
+            nulab: "✔",
+            jira: "✔✔",
+            zoho: "✔✔",
+          },
+          {
+            category: "Tích hợp Hệ thống",
+            feature: "Tích hợp Phần mềm kế toán",
+            bitrix24: "~",
+            nulab: "~",
+            jira: "~",
+            zoho: "✔✔",
+          },
+          {
+            category: "Tích hợp Hệ thống",
+            feature: "Tích hợp ERP",
+            bitrix24: "✔",
+            nulab: "~",
+            jira: "✔✔",
+            zoho: "✔",
+          },
+          {
+            category: "Tích hợp Hệ thống",
+            feature: "Tích hợp hệ thống Nhân sự (HRM)",
+            bitrix24: "✔",
+            nulab: "~",
+            jira: "✔",
+            zoho: "✔",
+          },
+          {
+            category: "Tích hợp Hệ thống",
+            feature: "Xuất/Nhập dữ liệu Excel/CSV",
+            bitrix24: "✔✔",
+            nulab: "✔✔",
+            jira: "✔✔",
+            zoho: "✔✔",
+          },
+          {
+            category: "Kỹ thuật & Người dùng",
+            feature: "Mô hình triển khai (Cloud/On-premise)",
+            bitrix24: "✔✔",
+            nulab: "✔",
+            jira: "✔✔",
+            zoho: "✔",
+          },
+          {
+            category: "Kỹ thuật & Người dùng",
+            feature: "Phân quyền chi tiết",
+            bitrix24: "✔✔",
+            nulab: "✔",
+            jira: "✔✔",
+            zoho: "✔✔",
+          },
+          {
+            category: "Kỹ thuật & Người dùng",
+            feature: "Giao diện tiếng Việt",
+            bitrix24: "✔",
+            nulab: "✔",
+            jira: "✔",
+            zoho: "✔",
+          },
+          {
+            category: "Kỹ thuật & Người dùng",
+            feature: "Dễ sử dụng cho người không rành kỹ thuật",
+            bitrix24: "~",
+            nulab: "✔",
+            jira: "~",
+            zoho: "✔",
+          },
+        ];
+
+        const categories = [
+          ...new Set(comparisonData.map((item) => item.category)),
+        ];
+
+        const recommendations = [
+          {
+            icon: "💰",
+            title: "Ưu tiên Quản lý Tài chính & Tích hợp Kế toán",
+            software: "Zoho Projects",
+            reason:
+              "Khả năng tích hợp liền mạch với Zoho Books giúp giải quyết gần như toàn bộ các yêu cầu tài chính một cách tự nhiên mà không cần các giải pháp chắp vá.",
+          },
+          {
+            icon: "⚙️",
+            title: "Ưu tiên Linh hoạt, Tùy biến cho ngành Công nghệ",
+            software: "Atlassian (Jira)",
+            reason:
+              "Nền tảng cực kỳ mạnh mẽ, nhưng cần chuẩn bị ngân sách và nguồn lực để cài đặt thêm các ứng dụng (add-on) từ Marketplace để đáp ứng yêu cầu tài chính.",
+          },
+          {
+            icon: "🏢",
+            title: 'Ưu tiên Hệ thống "Tất cả trong một" (All-in-One)',
+            software: "Bitrix24",
+            reason:
+              "Lựa chọn đáng cân nhắc để quản lý cả dự án, khách hàng (CRM), và giao tiếp nội bộ. Tuy nhiên, không phải là công cụ tài chính dự án chuyên sâu.",
+          },
+          {
+            icon: "👨‍💻",
+            title: "Ưu tiên Sự đơn giản, Dễ dùng cho đội nhỏ",
+            software: "Nulab (Backlog)",
+            reason:
+              "Công cụ hiệu quả cho quản lý công việc, nhưng sẽ không đáp ứng được hầu hết các yêu cầu quan trọng về quản lý tài chính dự án.",
+          },
+        ];
+
+        let state = {
+          visibleSoftware: ["bitrix24", "nulab", "jira", "zoho"],
+          activeCategory: "all",
+        };
+
+        let radarChart;
+
+        function calculateCategoryScores() {
+          const scores = {};
+          Object.keys(softwareData).forEach((sw) => {
+            scores[sw] = {};
+            categories.forEach((cat) => {
+              const itemsInCategory = comparisonData.filter(
+                (item) => item.category === cat
+              );
+              const totalScore = itemsInCategory.reduce(
+                (acc, item) => acc + scoreMap[item[sw]],
+                0
+              );
+              scores[sw][cat] =
+                (totalScore / (itemsInCategory.length * 4)) * 100; // As a percentage
+            });
+          });
+          return scores;
+        }
+
+        function renderRadarChart() {
+          const scores = calculateCategoryScores();
+          const datasets = state.visibleSoftware.map((swKey) => {
+            const software = softwareData[swKey];
+            return {
+              label: software.name,
+              data: categories.map((cat) => scores[swKey][cat]),
+              borderColor: software.color,
+              backgroundColor: `${software.color}33`, // with transparency
+              pointBackgroundColor: software.color,
+              pointBorderColor: "#fff",
+              pointHoverBackgroundColor: "#fff",
+              pointHoverBorderColor: software.color,
+            };
+          });
+
+          const chartData = {
+            labels: categories,
+            datasets: datasets,
+          };
+
+          const config = {
+            type: "radar",
+            data: chartData,
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              elements: {
+                line: {
+                  borderWidth: 3,
+                },
+              },
+              scales: {
+                r: {
+                  angleLines: { display: true, color: "rgba(0, 0, 0, 0.1)" },
+                  suggestedMin: 0,
+                  suggestedMax: 100,
+                  pointLabels: {
+                    font: { size: 12 },
+                    color: "#475569", // slate-600
+                  },
+                  grid: { color: "rgba(0, 0, 0, 0.1)" },
+                  ticks: {
+                    backdropColor: "rgba(255, 255, 255, 0.75)",
+                    stepSize: 25,
+                    font: { size: 10 },
+                  },
+                },
+              },
+              plugins: {
+                legend: {
+                  position: "top",
+                  labels: {
+                    font: { size: 14 },
+                  },
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      let label = context.dataset.label || "";
+                      if (label) {
+                        label += ": ";
+                      }
+                      if (context.parsed.r !== null) {
+                        label += context.parsed.r.toFixed(2) + "%";
+                      }
+                      return label;
+                    },
+                  },
+                },
+              },
+            },
+          };
+
+          if (radarChart) {
+            radarChart.destroy();
+          }
+          radarChart = new Chart(document.getElementById("radarChart"), config);
+        }
+
+        function renderTable() {
+          const tableBody = document.getElementById("comparison-table-body");
+          let html = "";
+
+          const filteredData =
+            state.activeCategory === "all"
+              ? comparisonData
+              : comparisonData.filter(
+                  (item) => item.category === state.activeCategory
+                );
+
+          let currentCategory = "";
+          filteredData.forEach((item) => {
+            if (item.category !== currentCategory) {
+              currentCategory = item.category;
+              html += `
+                    <tr class="bg-slate-50">
+                        <td colspan="5" class="py-2 px-4 text-sm font-semibold text-slate-700">${currentCategory}</td>
+                    </tr>
+                `;
+            }
+            html += `
+                <tr class="hover:bg-slate-50 transition-colors duration-150">
+                    <td class="py-3 px-4 text-sm text-slate-700">${
+                      item.feature
+                    }</td>
+                    <td class="py-3 px-4 text-center text-sm font-bold">${
+                      iconMap[item.bitrix24]
+                    }</td>
+                    <td class="py-3 px-4 text-center text-sm font-bold">${
+                      iconMap[item.nulab]
+                    }</td>
+                    <td class="py-3 px-4 text-center text-sm font-bold">${
+                      iconMap[item.jira]
+                    }</td>
+                    <td class="py-3 px-4 text-center text-sm font-bold">${
+                      iconMap[item.zoho]
+                    }</td>
+                </tr>
+            `;
+          });
+          tableBody.innerHTML = html;
+        }
+
+        function renderCategoryFilters() {
+          const container = document.getElementById("category-filters");
+          let html = `<button data-category="all" class="filter-btn px-3 py-1.5 text-sm font-medium border border-slate-300 rounded-full hover:bg-slate-100 transition-colors active-filter">Tất cả</button>`;
+          categories.forEach((cat) => {
+            html += `<button data-category="${cat}" class="filter-btn px-3 py-1.5 text-sm font-medium border border-slate-300 rounded-full hover:bg-slate-100 transition-colors">${cat}</button>`;
+          });
+          container.innerHTML = html;
+        }
+
+        function renderSoftwareToggles() {
+          const container = document.getElementById("software-toggles");
+          let html = "";
+          Object.keys(softwareData).forEach((swKey) => {
+            const software = softwareData[swKey];
+            const isVisible = state.visibleSoftware.includes(swKey);
+            html += `
+                <button 
+                    role="switch"
+                    aria-checked="${isVisible}"
+                    data-software="${swKey}"
+                    class="software-toggle flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-all duration-200"
+                    style="border-color: ${software.color};"
+                >
+                    <span class="w-4 h-4 rounded-full" style="background-color: ${software.color};"></span>
+                    <span class="text-sm font-semibold text-slate-700">${software.name}</span>
+                </button>
+            `;
+          });
+          container.innerHTML = html;
+        }
+
+        function renderSummaryCards() {
+          const container = document.getElementById("summary-cards");
+          let html = "";
+          Object.keys(softwareData).forEach((swKey) => {
+            const software = softwareData[swKey];
+            html += `
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4" style="border-top-color: ${software.color};">
+                    <h3 class="font-bold text-lg mb-2 text-slate-900">${software.name}</h3>
+                    <p class="text-slate-600 text-sm">${software.summary}</p>
+                </div>
+            `;
+          });
+          container.innerHTML = html;
+        }
+
+        function renderRecommendationCards() {
+          const container = document.getElementById("recommendation-cards");
+          let html = "";
+          recommendations.forEach((rec) => {
+            html += `
+                <div class="bg-white p-5 rounded-lg shadow-sm border-l-4 border-teal-500 flex items-start gap-4">
+                    <div class="text-3xl">${rec.icon}</div>
+                    <div>
+                        <h3 class="font-semibold text-md text-slate-800">${rec.title}</h3>
+                        <p class="text-sm text-slate-600 mt-1"><strong class="text-teal-600">${rec.software}</strong>: ${rec.reason}</p>
+                    </div>
+                </div>
+            `;
+          });
+          container.innerHTML = html;
+        }
+
+        function handleCategoryFilter(e) {
+          const target = e.target.closest(".filter-btn");
+          if (!target) return;
+
+          state.activeCategory = target.dataset.category;
+
+          document
+            .querySelectorAll(".filter-btn")
+            .forEach((btn) => btn.classList.remove("active-filter"));
+          target.classList.add("active-filter");
+
+          renderTable();
+        }
+
+        function handleSoftwareToggle(e) {
+          const target = e.target.closest(".software-toggle");
+          if (!target) return;
+
+          const softwareKey = target.dataset.software;
+          const isVisible = state.visibleSoftware.includes(softwareKey);
+
+          if (isVisible) {
+            // Prevent removing the last one
+            if (state.visibleSoftware.length > 1) {
+              state.visibleSoftware = state.visibleSoftware.filter(
+                (sw) => sw !== softwareKey
+              );
+            }
+          } else {
+            state.visibleSoftware.push(softwareKey);
+          }
+
+          target.setAttribute("aria-checked", !isVisible);
+          renderSoftwareToggles();
+          renderRadarChart();
+        }
+
+        // Initial Render
+        renderSummaryCards();
+        renderSoftwareToggles();
+        renderRadarChart();
+        renderCategoryFilters();
+        renderTable();
+        renderRecommendationCards();
+
+        // Attach Event Listeners
+        document
+          .getElementById("category-filters")
+          .addEventListener("click", handleCategoryFilter);
+        document
+          .getElementById("software-toggles")
+          .addEventListener("click", handleSoftwareToggle);
+      });
+    </script>
+  </body>
+</html>
