@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>So Sánh Phần Mềm Quản Lý Dự Án</title>
+    <title>Công Cụ So Sánh Phần Mềm Quản Lý Dự Án</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -51,19 +51,15 @@
         <h1
           class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight"
         >
-          So Sánh Phần Mềm Quản Lý Dự Án
+          Công Cụ So Sánh Phần Mềm Quản Lý Dự Án
         </h1>
         <p class="mt-1 text-slate-500">
-          Phân tích dựa trên tiêu chí form khảo sát gửi Phòng Tài chính, những
-          tính năng đánh giá đều dựa trên những tính năng sẵn có của các phần
-          mềm và các tính năng cốt lõi cơ bản của một phần mềm liên quan đến
-          quản lý dự án.
+          Phân tích tương tác dựa trên tiêu chí của Phòng Tài chính
         </p>
       </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-      <!-- Section 1: Introduction and High-Level Summaries -->
       <section id="tong-quan" class="mb-12">
         <h2 class="text-2xl font-bold mb-1 text-slate-900">
           Tóm Tắt & Đánh Giá Sơ Bộ
@@ -75,34 +71,45 @@
         <div
           id="summary-cards"
           class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-        >
-          <!-- Summary cards will be injected here by JS -->
-        </div>
+        ></div>
       </section>
 
-      <!-- Section 2: Interactive Comparison Dashboard -->
+      <section id="chi-phi" class="mb-12">
+        <h2 class="text-2xl font-bold mb-1 text-slate-900">
+          So Sánh Chi Phí Ước Tính
+        </h2>
+        <p class="text-slate-600 mb-6">
+          Phân tích giá cho các gói dịch vụ đề xuất để có được bộ tính năng đầy
+          đủ nhất theo khảo sát.
+        </p>
+        <div
+          id="price-cards"
+          class="grid grid-cols-1 md:grid-cols-2 gap-6"
+        ></div>
+      </section>
+
       <section id="so-sanh" class="bg-white p-4 sm:p-6 rounded-2xl shadow-lg">
         <h2 class="text-2xl font-bold mb-1 text-slate-900">
           Bảng Điều Khiển So Sánh Tương Tác
         </h2>
+        <p class="text-slate-600 mb-6">
+          Sử dụng các tùy chọn bên dưới để so sánh hiệu suất và tính năng của
+          các phần mềm.
+        </p>
 
-        <!-- Chart Section -->
         <div class="mb-10">
           <h3 class="text-xl font-semibold mb-4 text-center text-slate-800">
-            Biểu Đồ: So Sánh Tổng Thể
+            Biểu Đồ Radar: So Sánh Tổng Thể
           </h3>
           <div
             id="software-toggles"
             class="flex flex-wrap justify-center gap-4 mb-6"
-          >
-            <!-- Toggles will be injected here by JS -->
-          </div>
+          ></div>
           <div class="chart-container">
             <canvas id="radarChart"></canvas>
           </div>
         </div>
 
-        <!-- Detailed Comparison Table Section -->
         <div>
           <div
             class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3"
@@ -121,9 +128,7 @@
             </div>
           </div>
 
-          <div id="category-filters" class="flex flex-wrap gap-2 mb-4">
-            <!-- Filter buttons will be injected here by JS -->
-          </div>
+          <div id="category-filters" class="flex flex-wrap gap-2 mb-4"></div>
           <div class="overflow-x-auto rounded-lg border border-slate-200">
             <table class="min-w-full bg-white">
               <thead class="bg-slate-100">
@@ -158,24 +163,21 @@
               <tbody
                 id="comparison-table-body"
                 class="divide-y divide-slate-200"
-              >
-                <!-- Table rows will be injected here by JS -->
-              </tbody>
+              ></tbody>
             </table>
           </div>
         </div>
       </section>
 
-      <!-- Section 3: Recommendations -->
       <section id="khuyen-nghi" class="mt-12">
-        <h2 class="text-2xl font-bold mb-1 text-slate-900">Kết Luận</h2>
+        <h2 class="text-2xl font-bold mb-1 text-slate-900">
+          Kết Luận và Khuyến Nghị
+        </h2>
         <p class="text-slate-600 mb-6">
-          Dựa theo các tiêu chí đánh giá đã phân tích, dưới đây là các khuyến
-          nghị cho các trường hợp ưu tiên sử dụng trong từng phần mềm:
+          Dựa trên phân tích, đây là các khuyến nghị cho từng trường hợp ưu tiên
+          cụ thể.
         </p>
-        <div id="recommendation-cards" class="space-y-4">
-          <!-- Recommendation cards will be injected here by JS -->
-        </div>
+        <div id="recommendation-cards" class="space-y-4"></div>
       </section>
     </main>
 
@@ -183,7 +185,7 @@
       <div
         class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-sm text-slate-500"
       >
-        <p>&copy; 2025 Thực hiện và phát triển bởi Team Application</p>
+        <p>&copy; 2024 Công cụ phân tích. Được tạo để hỗ trợ ra quyết định.</p>
       </div>
     </footer>
 
@@ -195,29 +197,56 @@
         const softwareData = {
           bitrix24: {
             name: "Bitrix24",
-            color: "#ef4444", // red-500
+            color: "#ef4444",
             summary:
               'Nền tảng "tất cả trong một" mạnh về CRM và tự động hóa quy trình, phù hợp cho công ty muốn một hệ thống hợp nhất từ A-Z.',
           },
           nulab: {
             name: "Nulab (Backlog)",
-            color: "#3b82f6", // blue-500
+            color: "#3b82f6",
             summary:
               "Thiết kế cho nhóm phát triển phần mềm với giao diện đơn giản, thân thiện. Mạnh về quản lý mã nguồn và theo dõi lỗi.",
           },
           jira: {
             name: "Atlassian (Jira)",
-            color: "#eab308", // yellow-500
+            color: "#eab308",
             summary:
               "Tiêu chuẩn vàng cho đội ngũ IT, cực kỳ mạnh mẽ, linh hoạt và tùy biến cao thông qua hệ sinh thái ứng dụng (Marketplace) khổng lồ.",
           },
           zoho: {
             name: "Zoho Projects",
-            color: "#22c55e", // green-500
+            color: "#22c55e",
             summary:
               "Thế mạnh vượt trội là khả năng tích hợp liền mạch với các ứng dụng khác trong bộ Zoho, đặc biệt là Zoho Books (kế toán).",
           },
         };
+
+        const pricingData = [
+          {
+            key: "zoho",
+            price: "~ $9 / người dùng / tháng + Zoho Books($20)",
+            plan: "Gói Projects Enterprise",
+            note: "Chi phí trên chưa bao gồm gói Zoho Books (từ $15/tháng) cần thiết cho các tính năng tài chính, kế toán đầy đủ nhất.",
+          },
+          {
+            key: "jira",
+            price: "~ $12.5 / người dùng / tháng",
+            plan: "Gói Jira Standard + Add-on",
+            note: "Chi phí là tổng của Jira (~$8) và add-on tài chính như Tempo Timesheets (~$4.5). Chi phí thực tế có thể thay đổi theo add-on.",
+          },
+          {
+            key: "bitrix24",
+            price: "$199 / tháng",
+            plan: "Gói Professional",
+            note: "Giá cố định cho tối đa 100 người dùng. Chi phí trên mỗi người dùng sẽ rất thấp nếu sử dụng hết số lượng.",
+          },
+          {
+            key: "nulab",
+            price: "$175 / tháng",
+            plan: "Gói Premium",
+            note: "Gói này hỗ trợ không giới hạn người dùng. Phù hợp cho các công ty có quy mô nhân sự lớn hoặc thay đổi thường xuyên.",
+          },
+        ];
 
         const comparisonData = [
           {
@@ -480,14 +509,14 @@
             title: "Ưu tiên Quản lý Tài chính & Tích hợp Kế toán",
             software: "Zoho Projects",
             reason:
-              "Khả năng tích hợp liền mạch với Zoho Books giúp giải quyết gần như toàn bộ các yêu cầu của phần mền quản lý cho phòng ban tài chính một cách tự nhiên mà không thêm nhiều các giải pháp khác.",
+              "Khả năng tích hợp liền mạch với Zoho Books giúp giải quyết gần như toàn bộ các yêu cầu tài chính một cách tự nhiên mà không cần các giải pháp chắp vá.",
           },
           {
             icon: "⚙️",
             title: "Ưu tiên Linh hoạt, Tùy biến cho ngành Công nghệ",
             software: "Atlassian (Jira)",
             reason:
-              "Nền tảng cực kỳ mạnh mẽ, nhưng cần để cài đặt thêm nhiều các ứng dụng (add-on) từ Marketplace để đáp ứng yêu cầu quản lý của phòng tài chính. Nền tảng này phù hợp với các công ty công nghệ có đội ngũ IT.",
+              "Nền tảng cực kỳ mạnh mẽ, nhưng cần chuẩn bị ngân sách và nguồn lực để cài đặt thêm các ứng dụng (add-on) từ Marketplace để đáp ứng yêu cầu tài chính.",
           },
           {
             icon: "🏢",
@@ -501,7 +530,7 @@
             title: "Ưu tiên Sự đơn giản, Dễ dùng cho đội nhỏ",
             software: "Nulab (Backlog)",
             reason:
-              "Công cụ hiệu quả cho quản lý công việc, nhưng sẽ không đáp ứng được hầu hết các yêu cầu quan trọng từ phòng tài chính về phần quản lý tài chính dự án.",
+              "Công cụ hiệu quả cho quản lý công việc, nhưng sẽ không đáp ứng được hầu hết các yêu cầu quan trọng về quản lý tài chính dự án.",
           },
         ];
 
@@ -511,6 +540,27 @@
         };
 
         let radarChart;
+
+        function renderPriceCards() {
+          const container = document.getElementById("price-cards");
+          let html = "";
+          pricingData.forEach((p) => {
+            const sw = softwareData[p.key];
+            html += `
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4" style="border-top-color: ${sw.color};">
+                    <h3 class="font-bold text-lg mb-2 text-slate-900">${sw.name}</h3>
+                    <div class="my-4">
+                        <p class="text-3xl font-bold text-slate-800">${p.price}</p>
+                        <p class="text-sm text-slate-500">${p.plan}</p>
+                    </div>
+                    <div class="text-xs bg-slate-100 p-3 rounded-md text-slate-700">
+                        <span class="font-semibold">Lưu ý:</span> ${p.note}
+                    </div>
+                </div>
+            `;
+          });
+          container.innerHTML = html;
+        }
 
         function calculateCategoryScores() {
           const scores = {};
@@ -525,7 +575,7 @@
                 0
               );
               scores[sw][cat] =
-                (totalScore / (itemsInCategory.length * 4)) * 100; // As a percentage
+                (totalScore / (itemsInCategory.length * 4)) * 100;
             });
           });
           return scores;
@@ -539,39 +589,27 @@
               label: software.name,
               data: categories.map((cat) => scores[swKey][cat]),
               borderColor: software.color,
-              backgroundColor: `${software.color}33`, // with transparency
+              backgroundColor: `${software.color}33`,
               pointBackgroundColor: software.color,
               pointBorderColor: "#fff",
               pointHoverBackgroundColor: "#fff",
               pointHoverBorderColor: software.color,
             };
           });
-
-          const chartData = {
-            labels: categories,
-            datasets: datasets,
-          };
-
+          const chartData = { labels: categories, datasets: datasets };
           const config = {
             type: "radar",
             data: chartData,
             options: {
               responsive: true,
               maintainAspectRatio: false,
-              elements: {
-                line: {
-                  borderWidth: 3,
-                },
-              },
+              elements: { line: { borderWidth: 3 } },
               scales: {
                 r: {
                   angleLines: { display: true, color: "rgba(0, 0, 0, 0.1)" },
                   suggestedMin: 0,
                   suggestedMax: 100,
-                  pointLabels: {
-                    font: { size: 12 },
-                    color: "#475569", // slate-600
-                  },
+                  pointLabels: { font: { size: 12 }, color: "#475569" },
                   grid: { color: "rgba(0, 0, 0, 0.1)" },
                   ticks: {
                     backdropColor: "rgba(255, 255, 255, 0.75)",
@@ -581,12 +619,7 @@
                 },
               },
               plugins: {
-                legend: {
-                  position: "top",
-                  labels: {
-                    font: { size: 14 },
-                  },
-                },
+                legend: { position: "top", labels: { font: { size: 14 } } },
                 tooltip: {
                   callbacks: {
                     label: function (context) {
@@ -604,7 +637,6 @@
               },
             },
           };
-
           if (radarChart) {
             radarChart.destroy();
           }
@@ -614,23 +646,17 @@
         function renderTable() {
           const tableBody = document.getElementById("comparison-table-body");
           let html = "";
-
           const filteredData =
             state.activeCategory === "all"
               ? comparisonData
               : comparisonData.filter(
                   (item) => item.category === state.activeCategory
                 );
-
           let currentCategory = "";
           filteredData.forEach((item) => {
             if (item.category !== currentCategory) {
               currentCategory = item.category;
-              html += `
-                    <tr class="bg-slate-50">
-                        <td colspan="5" class="py-2 px-4 text-sm font-semibold text-slate-700">${currentCategory}</td>
-                    </tr>
-                `;
+              html += `<tr class="bg-slate-50"><td colspan="5" class="py-2 px-4 text-sm font-semibold text-slate-700">${currentCategory}</td></tr>`;
             }
             html += `
                 <tr class="hover:bg-slate-50 transition-colors duration-150">
@@ -649,8 +675,7 @@
                     <td class="py-3 px-4 text-center text-sm font-bold">${
                       iconMap[item.zoho]
                     }</td>
-                </tr>
-            `;
+                </tr>`;
           });
           tableBody.innerHTML = html;
         }
@@ -676,12 +701,10 @@
                     aria-checked="${isVisible}"
                     data-software="${swKey}"
                     class="software-toggle flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-all duration-200"
-                    style="border-color: ${software.color};"
-                >
+                    style="border-color: ${software.color};">
                     <span class="w-4 h-4 rounded-full" style="background-color: ${software.color};"></span>
                     <span class="text-sm font-semibold text-slate-700">${software.name}</span>
-                </button>
-            `;
+                </button>`;
           });
           container.innerHTML = html;
         }
@@ -695,8 +718,7 @@
                 <div class="bg-white p-6 rounded-xl shadow-md border-t-4" style="border-top-color: ${software.color};">
                     <h3 class="font-bold text-lg mb-2 text-slate-900">${software.name}</h3>
                     <p class="text-slate-600 text-sm">${software.summary}</p>
-                </div>
-            `;
+                </div>`;
           });
           container.innerHTML = html;
         }
@@ -712,8 +734,7 @@
                         <h3 class="font-semibold text-md text-slate-800">${rec.title}</h3>
                         <p class="text-sm text-slate-600 mt-1"><strong class="text-teal-600">${rec.software}</strong>: ${rec.reason}</p>
                     </div>
-                </div>
-            `;
+                </div>`;
           });
           container.innerHTML = html;
         }
@@ -721,26 +742,20 @@
         function handleCategoryFilter(e) {
           const target = e.target.closest(".filter-btn");
           if (!target) return;
-
           state.activeCategory = target.dataset.category;
-
           document
             .querySelectorAll(".filter-btn")
             .forEach((btn) => btn.classList.remove("active-filter"));
           target.classList.add("active-filter");
-
           renderTable();
         }
 
         function handleSoftwareToggle(e) {
           const target = e.target.closest(".software-toggle");
           if (!target) return;
-
           const softwareKey = target.dataset.software;
           const isVisible = state.visibleSoftware.includes(softwareKey);
-
           if (isVisible) {
-            // Prevent removing the last one
             if (state.visibleSoftware.length > 1) {
               state.visibleSoftware = state.visibleSoftware.filter(
                 (sw) => sw !== softwareKey
@@ -749,21 +764,19 @@
           } else {
             state.visibleSoftware.push(softwareKey);
           }
-
           target.setAttribute("aria-checked", !isVisible);
           renderSoftwareToggles();
           renderRadarChart();
         }
 
-        // Initial Render
         renderSummaryCards();
+        renderPriceCards();
         renderSoftwareToggles();
         renderRadarChart();
         renderCategoryFilters();
         renderTable();
         renderRecommendationCards();
 
-        // Attach Event Listeners
         document
           .getElementById("category-filters")
           .addEventListener("click", handleCategoryFilter);
